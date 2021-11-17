@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -12,12 +13,31 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Text('Chat'),
       ),
-      body: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, index) => Container(
-          padding: EdgeInsets.all(8),
-          child: Text('Chat list'),
-        ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('chats/K3FLAaVY8Fv3I1ygWXR9/messages').snapshots(),
+        builder: (context, streamSnapshot) {
+          if (streamSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final documents = streamSnapshot.data.docs;
+          return ListView.builder(
+            itemCount: documents.length,
+            itemBuilder: (context, index) => Container(
+              padding: EdgeInsets.all(8),
+              child: Text(documents[index]['text']),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          FirebaseFirestore.instance.collection('chats/K3FLAaVY8Fv3I1ygWXR9/messages').add({
+            'text': 'CLICK THE ADD BUTTON',
+          });
+        },
       ),
     );
   }
