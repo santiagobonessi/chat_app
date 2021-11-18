@@ -38,7 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
           {
             'username': userName,
             'email': email,
-            'image_url': imageUrl,
+            'imageUrl': imageUrl,
           },
         );
       }
